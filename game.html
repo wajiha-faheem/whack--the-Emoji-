@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          body {
+            font-family: 'Comic Sans MS', cursive;
+            background: linear-gradient(to right, #ffe6f7, #fff0f5);
+            text-align: center;
+            padding: 30px;
+          }
+      
+          h1 {
+            color: #ff4da6;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px #ffb6c1;
+          }
+      
+          #score, #timer {
+            font-size: 1.3rem;
+            color: #c71585;
+            margin-bottom: 10px;
+          }
+      
+          #startBtn {
+            padding: 12px 25px;
+            background: #ff69b4;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.4);
+            transition: transform 0.2s ease;
+          }
+      
+          #startBtn:hover {
+            background: #ff85c1;
+            transform: scale(1.05);
+          }
+      
+          #game {
+            width: 320px;
+            height: 320px;
+            margin: 0 auto;
+            background: #fff0f5;
+            border-radius: 25px;
+            border: 4px dashed #ff69b4;
+            position: relative;
+            box-shadow: 0 0 20px #ffc0cb;
+            overflow: hidden;
+          }
+      
+          .emoji {
+            font-size: 2.5rem;
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            animation: pop 0.2s ease;
+            user-select: none;
+          }
+      
+          @keyframes pop {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+          }
+    </style>
+
+    <h1>🎯Whack The Emoji🎯</h1>
+    <div id="score">Score: 0</div>
+    <div id="timer">Time Left: 30s</div>
+    <button id="startBtn">Start Game</button>
+
+    <div id="game"></div>
+
+    <script>
+       const gameArea = document.getElementById('game');
+       const scoreDisplay = document.getElementById('score');
+       const timerDisplay = document.getElementById('timer');
+       const startBtn = document.getElementById('startBtn');
+
+       let score =0;
+      let timeLeft = 30;
+        let gameInterval;
+        let timerInterval;
+
+        function randomPosition(size){
+            const x = Math.floor(Math.random() * (320 - size));
+            const y = Math.floor(Math.random() * (320 - size));
+            return {x, y};
+        }
+
+        function showEmoji(){
+            const emoji = document.createElement("div");
+            emoji.classList.add("emoji");
+            emoji.textContent =["🐣", "😈", "👸", "💖", "🧁", "🐰", "💥", "🐸", "👻"][Math.floor(Math.random() * 10)];
+            const {x,y} = randomPosition(50);
+            emoji.style.left = x + "px";
+            emoji.style.top = y + "px";
+
+            emoji.addEventListener("click",() =>{
+                score++;
+                scoreDisplay.textContent = "Score: " + score;
+                emoji.remove();
+            });
+
+            gameArea.appendChild(emoji);
+            setTimeout(()=>{
+                emoji.remove();
+            }, 1500);
+        }
+
+        function startGame(){
+            score = 0;
+        timeLeft = 30;
+        scoreDisplay.textContent = "Score: 0";
+        timerDisplay.textContent = "Time Left: 30s";
+        startBtn.disabled = true;
+
+        gameInterval = setInterval(showEmoji, 1500);
+        timerInterval = setInterval(()=>{
+            timeLeft--;
+            timerDisplay.textContent = "Time Left: " + timeLeft + "s";
+            if(timeLeft<= 0){
+                clearInterval(gameInterval);
+                clearInterval(timerInterval);
+                alert ("⏰ Time's up, Dear!  Your score is: " + score);
+                startBtn.disabled = false;
+            }
+        }, 1000)
+        }
+
+        startBtn.addEventListener("click", startGame);
+
+    </script>
+</body>
+</html>
